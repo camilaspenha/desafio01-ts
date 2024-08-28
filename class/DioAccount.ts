@@ -1,42 +1,52 @@
 export abstract class DioAccount {
-  private name: string
-  private readonly accountNumber: number
-  balance: number = 0
-  private status: boolean = true
+  private readonly name: string;
+  private readonly accountNumber: number;
+  private balance: number = 0;
+  private status: boolean = true;
 
-  constructor(name: string, accountNumber: number){
-    this.name = name
-    this.accountNumber = accountNumber
+  constructor(name: string, accountNumber: number) {
+    this.name = name;
+    this.accountNumber = accountNumber;
   }
-
-  setName = (name: string): void => {
-    this.name = name
-    console.log('Nome alterado com sucesso!')
-  }
-
   getName = (): string => {
-    return this.name
-  }
-
-  deposit = (): void => {
-    if(this.validateStatus()){
-      console.log('Voce depositou')
+    return this.name;
+  };
+  getBalance = (): number => {
+    return this.balance;
+  };
+  protected setBalance = (value: number) => {
+    this.balance = value;
+  };
+  deposit = (value: number): void => {
+    if (this.validateStatus()) {
+      this.setBalance(this.balance + value);
+      console.log(
+        `Depósito realizado com sucesso! Saldo atual: R$ ${this.balance}`
+      );
     }
-  }
-
-  withdraw = (): void => {
-    console.log('Voce sacou')
-  }
-
-  getBalance = (): void => {
-    console.log(this.balance)
-  }
-
-  private validateStatus = (): boolean => {
+  };
+  withdraw = (value: number): void => {
+    if (this.validateStatus()) {
+      if (this.validateWithdraw(value)) {
+        this.setBalance(this.balance - value);
+        console.log(
+          `Saque realizado com sucesso! Saldo atual: R$ ${this.balance}`
+        );
+      }
+    }
+  };
+  private validateWithdraw = (value: number): boolean => {
+    if (this.balance >= value) {
+      return true;
+    }
+    console.log("Saldo insuficiente.");
+    return false;
+  };
+  protected validateStatus = (): boolean => {
     if (this.status) {
-      return this.status
+      return this.status;
     }
-
-    throw new Error('Conta inválida')
-  }
+    console.log("Conta inativa.");
+    return false;
+  };
 }
